@@ -1,10 +1,41 @@
-import React from "react";
+import React, {useRef} from "react";
 import styled from "styled-components";
 // Assets
 
 import ContactImg3 from "../../assets/img/contactmain.svg";
 
+import emailjs from '@emailjs/browser';
+
+
+
 export default function Contact() {
+
+  const [messageSent, setMessageSent] = React.useState(false)
+  const form = useRef();
+  
+
+
+  const handleSubmit = (event) => {
+      event.preventDefault()
+
+      emailjs.sendForm('service_6a4kjss', 'template_x2wpb6i', form.current, 'W7nDObKvKP2OODXLn')
+
+      .then((result) => {
+          event.target.reset()
+          setMessageSent(true)
+          setTimeout(()=> {
+            setMessageSent(false)
+          }, 3000)
+      }, (error) => {
+          console.log(error.text);
+      });
+
+  }
+
+
+
+
+
   return (
     <Wrapper id="contact">
       <div className="lightBg">
@@ -12,25 +43,29 @@ export default function Contact() {
           <HeaderInfo>
             <h1 className="font40 extraBold">Let's get in touch</h1>
             <p className="font13">
-              Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut
+              We are open to response at anytime with the concept of (365/24/7)
               <br />
-              labore et dolore magna aliquyam erat, sed diam voluptua.
             </p>
           </HeaderInfo>
           <div className="row" style={{ paddingBottom: "30px" }}>
             <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-              <Form>
-                <label className="font13">First name:</label>
-                <input type="text" id="fname" name="fname" className="font20 extraBold" />
+
+              <Form ref={form} onSubmit={handleSubmit}>
+                <label className="font13">Full name:</label>
+                <input type="text" id="fname" name="name" className="font20 extraBold" />
                 <label className="font13">Email:</label>
                 <input type="text" id="email" name="email" className="font20 extraBold" />
                 <label className="font13">Subject:</label>
                 <input type="text" id="subject" name="subject" className="font20 extraBold" />
                 <textarea rows="4" cols="50" type="text" id="message" name="message" className="font20 extraBold" />
+              
+                <SumbitWrapper className="flex">
+                  <ContactButton  type="submit">Send Message </ContactButton>
+                </SumbitWrapper>
               </Form>
-              <SumbitWrapper className="flex">
-                <ButtonInput type="submit" value="Send Message" className="pointer animate radius8" style={{ maxWidth: "220px" }} />
-              </SumbitWrapper>
+
+              { messageSent && (<p style={{color: 'green'}}>Message Sent Successfully.</p>)}
+
             </div>
             <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6 flex">
                   <img src={ContactImg3} alt="office" className="radius6" />
@@ -109,3 +144,22 @@ const SumbitWrapper = styled.div`
 
 
 
+
+
+
+const ContactButton = styled.button`
+  border: none;
+  background-image: linear-gradient(to left, #870000, #190a05);
+  width: 100%;
+  padding: 1em;
+  transition: box-shadow 300ms ease-in-out;
+  outline: none;
+  box-shadow: 0 60px 80px rgba(0,0,0,0.60), 0 45px 26px rgba(0,0,0,0.14);
+  color: #FEBEBE;
+  :hover {
+    background-image: linear-gradient(to right, #870000, #190a05);
+    transform: scale(1.015);
+    box-shadow: 0 1px 1px rgba(0,0,0,0.15), 0 2px 2px rgba(0,0,0,0.15), 0 4px 4px rgba(0,0,0,0.15), 0 8px 8px rgba(0,0,0,0.15);
+
+  }
+`;
